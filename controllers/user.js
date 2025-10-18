@@ -9,9 +9,16 @@ const registerUser = async (req, res) => {
         if (user) {
             return res.status(400).json({ msg: 'User already exists'})
         }
-        User = new User({ username, password})
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        user = new User({ username, password : hashedPassword})
         await user.save()
-        res.status(201).json({ msg: 'user registered succesful'})
+
+        const payload = { user: {id: user.id }}
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
+
+        res.status(201).json({ msg: 'user registered succesful', token})
     } catch (error) {
         res.status(500).send(`error: ${error}.message`)
     }

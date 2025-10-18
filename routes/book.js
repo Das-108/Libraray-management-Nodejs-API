@@ -8,13 +8,14 @@ const {
     deleteBook,
     issueBook,
     returnBook
-} = require ('../controllers/book')
+} = require ('../controllers/book');
+const authMiddleware = require('../middleware/auth');
 
-router.get('/', getAllBooks);
-router.post('/', addBook);
-router.patch('/:id', updateBook);
-router.delete('/:id', deleteBook);
-router.post('/issue/:id', issueBook);
-router.post('/return/:id', returnBook);
+router.get('/', authMiddleware, getAllBooks);
+router.post('/', authMiddleware, addBook);
+router.patch('/:id', authMiddleware, updateBook);
+router.delete('/:id', authMiddleware, deleteBook);
+router.post('/issue/:id', authMiddleware, issueBook);
+router.post('/return/:id', authMiddleware, returnBook);
 
 module.exports = router
