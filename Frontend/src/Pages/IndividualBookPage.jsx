@@ -1,6 +1,18 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const IndividualBookPage = () => {
+
+  const navigate = useNavigate()
+
+  const issueBookOnClick = () => {
+    navigate ('/issue-book');
+  }
+
+  const editBookOnClick = () => {
+    navigate('/edit-book')
+  }
+
   return (
     <div className="min-h-screen bg-blue-100 text-white p-8">
 
@@ -27,10 +39,10 @@ const IndividualBookPage = () => {
                 <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                 Delete book
                 </button>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <button onClick={issueBookOnClick} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 Issue book
                 </button>
-                <button className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">
+                <button onClick={editBookOnClick} className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">
                 Edit Book Details
                 </button>
                 <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">

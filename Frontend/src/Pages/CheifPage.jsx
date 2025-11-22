@@ -1,6 +1,21 @@
 import React from 'react'
+import IndividualBookPage from './IndividualBookPage'
+import AddBookForm from '../components/AddBookForm'
+import { useNavigate } from 'react-router-dom'
+
 
 const CheifPage = () => {
+
+  const navigate = useNavigate();
+
+  const addBookOnClick = () => {
+    navigate('/add-book')
+  }
+
+  const individualBook = () => {
+    navigate('/individualbookpage')
+  }
+
   return (
     <div>
       <div className="flex justify-center p-2">
@@ -16,7 +31,7 @@ const CheifPage = () => {
 
         </div>
         
-        <button className='bg-blue-500 p-2 px-2 rounded-xl text-white active:scale-95 m-2'> < i class="ri-add-large-line"></i>
+        <button onClick={addBookOnClick} className='bg-blue-500 p-2 px-2 rounded-xl text-white active:scale-95 m-2'> < i class="ri-add-large-line"></i>
         Add New Book</button>
             
       </div>
@@ -42,7 +57,7 @@ const CheifPage = () => {
 
       <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 p-2 gap-4'>
 
-        <div className=' border w-[280px] p-3 rounded-xl'>
+        <div onClick={individualBook} className=' border w-[280px] p-3 rounded-xl'>
           <img
            className='w-[260px] h-[150px] mb-2 object-cover rounded-lg'
             src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
