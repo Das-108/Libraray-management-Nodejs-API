@@ -1,11 +1,13 @@
 const { error } = require('console');
 const Book = require('../models/book');
 const User = require('../models/user');
+const book = require('../models/book');
 
 const getAllBooks = async (req, res) => {
     try {
         const books = await Book.find().populate('issuedTo', 'username');
-        res.json(books)
+        res.json({books : books})
+        console.log(books)
     }catch (error) {
         res.status(500).json({error: error.message })
     }

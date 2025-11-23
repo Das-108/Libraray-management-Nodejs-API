@@ -3,8 +3,10 @@ const express = require('express')
 const app = express()
 const book = require('./routes/book')
 const user = require('./routes/user')
+const cors = require('cors')
 
 //middleware
+app.use(cors())
 app.use(express.json())
 
 //routes

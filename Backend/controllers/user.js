@@ -27,6 +27,11 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { username, password } = req.body
     try {
+
+        if (!username || !password) {
+            return res.status(400).json({ msg: 'Please provide both username and password.' });
+        }
+
         const user = await User.findOne({ username })
         if(!user) {
             return res.status(400).json({ msg: 'Invalid Credentials'})

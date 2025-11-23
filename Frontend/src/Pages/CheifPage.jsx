@@ -1,19 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import IndividualBookPage from './IndividualBookPage'
 import AddBookForm from '../components/AddBookForm'
 import { useNavigate } from 'react-router-dom'
+import axiosInstance from '../api/axiosInstance'
+// import book from '../../../Backend/models/book'
+
+const BOOKS_ENDPOINT = '/book'
+
 
 
 const CheifPage = () => {
 
   const navigate = useNavigate();
 
+
+  const [books, setBooks] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+
+  const fetchBooks = async () => {
+
+    try {
+      const response = await axiosInstance.get(BOOKS_ENDPOINT);
+      setBooks(response.data.books);
+      setLoading(false)
+
+    } catch (error) {
+      console.error('Error Fetching Books:' ,error)
+      setError('failed to load books. please check backend connection')
+      setLoading(false)
+    }
+
+  };
+
+  useEffect(() => {
+    fetchBooks()
+  },[])
+
+  if(loading) {
+    return ( <div className='p-8'> loading books..... </div>)
+  }
+
+  if(error) {
+    return <div className="p-8 text-red-600"> {error}</div>
+  }
+
+
+  
+
   const addBookOnClick = () => {
     navigate('/add-book')
   }
 
-  const individualBook = () => {
-    navigate('/individualbookpage')
+  const individualBook = (id) => {
+    navigate('/individualbookpage/${id}')
   }
 
   return (
@@ -57,18 +98,21 @@ const CheifPage = () => {
 
       <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 p-2 gap-4'>
 
-        <div onClick={individualBook} className=' border w-[280px] p-3 rounded-xl'>
+        {books.map((book) => {
+          <div key={book._id} onClick={individualBook(book._id)} className=' border w-[280px] p-3 rounded-xl'>
           <img
            className='w-[260px] h-[150px] mb-2 object-cover rounded-lg'
             src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="bookImg" />
+            alt={book.title} />
           <div className='text-gray-500 tracking-tight'>
-            <p className=''>Name: <span className='text-black font-medium'>Milk and Honey</span></p>
-            <p className=''>Author: <span className='text-black font-medium'>Gaurnaga</span></p>
-            <p className=''>Status: <span className='text-black font-medium'>Available</span></p>
-            <p className=''>Category: Health</p>
+            <p>Name: <span className='text-black font-medium'>{book.title}</span></p>
+            <p>Author: <span className='text-black font-medium'>{book.author}</span></p>
+            <p>Status: <span className={`font-medium ${book.status === 'Available' ? 'text-green-600' : 'text-red-600'}`}>{book.status || 'N/A'}</span></p>
+            <p>Category: {book.category}</p>
           </div>
         </div>
+
+        })}
         
   
 
