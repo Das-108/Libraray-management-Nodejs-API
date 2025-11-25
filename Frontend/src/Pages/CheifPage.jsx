@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import IndividualBookPage from './IndividualBookPage'
 import AddBookForm from '../components/AddBookForm'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
-// import book from '../../../Backend/models/book'
 
 const BOOKS_ENDPOINT = '/book'
 
@@ -54,7 +53,7 @@ const CheifPage = () => {
   }
 
   const individualBook = (id) => {
-    navigate('/individualbookpage/${id}')
+    navigate(`/individualbookpage/${id}`)
   }
 
   return (
@@ -98,8 +97,8 @@ const CheifPage = () => {
 
       <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 p-2 gap-4'>
 
-        {books.map((book) => {
-          <div key={book._id} onClick={individualBook(book._id)} className=' border w-[280px] p-3 rounded-xl'>
+        {books.map((book) => (
+          <div key={book._id} onClick={() => individualBook(book._id)} className=' border w-[280px] p-3 rounded-xl'>
           <img
            className='w-[260px] h-[150px] mb-2 object-cover rounded-lg'
             src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -112,7 +111,8 @@ const CheifPage = () => {
           </div>
         </div>
 
-        })}
+        
+))}
         
   
 

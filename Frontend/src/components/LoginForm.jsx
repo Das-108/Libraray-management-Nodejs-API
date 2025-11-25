@@ -1,10 +1,8 @@
-// src/components/LoginForm.jsx (Updated)
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// Removed unused imports: signup, cheifpage
 import axiosInstance from '../api/axiosInstance';
-
+import SignUp from './SignUp';
+import CheifPage from '../Pages/CheifPage';
 
 const LoginForm = () => {
     const navigate = useNavigate();
