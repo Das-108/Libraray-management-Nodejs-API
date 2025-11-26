@@ -23,6 +23,23 @@ const addBook = async (req, res) => {
     }
 };
 
+const getSingleBook = async (req, res) => {
+    const { id: bookId} = req.params
+    
+    try {
+        const book = await Book.findById(bookId)
+
+        if(!book) {
+            return res.status(404).json({ msg: `Book not found with ID : ${bookId}`})
+        }
+
+        res.status(200).json({ book })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ msg: 'Server error while fetching book details.'})
+    }
+}
+
 const updateBook = async (req, res) => {
     try { 
         const updateBook = await Book.findByIdAndUpdate(
@@ -94,4 +111,4 @@ const returnBook = async (req, res) => {
     }
 };
 
-module.exports = { getAllBooks, addBook, updateBook, deleteBook, issueBook, returnBook}
+module.exports = { getAllBooks, addBook, updateBook, deleteBook, issueBook, returnBook ,getSingleBook}

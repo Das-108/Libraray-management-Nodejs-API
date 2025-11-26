@@ -1,12 +1,12 @@
+
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
 
+const ADD_BOOK_ENDPOINT = '/book'
+
 const AddBookForm = () => {
-
-  const ADD_BOOK_ENDPOINT = '/book'
-
-  const AddBookForm = () => {
+    // Hooks and state variables are declared first, making them accessible everywhere.
     const navigate = useNavigate()
 
     const [title, setTitle] = useState('')
@@ -16,98 +16,106 @@ const AddBookForm = () => {
     const [error, setError] = useState(null)
 
     const handleAddBook = async (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      setLoading(true)
-      setError(null)
+        setLoading(true)
+        setError(null)
 
-      if(!title || !author || !category) {
-        setLoading(false)
-        return setError('Please fill in all fields (title,author,category)')
-      }
-
-      try {
-        const payload = {
-          title,
-          author,
-          category,
-          status: 'Available'
+        if (!title || !author || !category) {
+            setLoading(false)
+            return setError('Please fill in all fields (Title, Author, Category).')
         }
 
-        const response = await axiosInstance.post(ADD_BOOK_ENDPOINT, payload);
-        alert(`Book "${response.data.book.title}" addded sucessfully!`)
+        try {
+            const payload = {
+                title,
+                author,
+                category,
+                status: 'Available'
+            }
 
-        navigate('/cheifpage')
+            const response = await axiosInstance.post(ADD_BOOK_ENDPOINT, payload);
 
-      } catch (error) {
-        console.error('Add Book Failed: ' ,error)
-        
-        setError(error.response?.data?.msg || 'failed to add the book. server error.')        
-      }finally {
-        setLoading(false)
-      }
+            const bookTitle = response.data.book?.title || title;
+
+            alert(`Book "${bookTitle}" added successfully!`)
+
+            navigate('/cheifpage')
+
+        } catch (error) {
+            console.error('Add Book Failed: ', error)
+
+            setError(error.response?.data?.msg || 'Failed to add the book. Server error.')
+        } finally {
+            setLoading(false)
+        }
     }
 
-  }
 
+    return (
+        <div className='flex items-center justify-center bg-gray-50 min-h-screen'>
+            <div className='border-2 rounded-xl border-gray-200 bg-white w-[400px] p-6 shadow-xl'>
+                <h1 className='font-bold text-3xl mb-3 text-center text-gray-800'>
+                    Add a Book
+                </h1>
 
+                {error && (
+                    <div className='text-red-700 bg-red-100 border border-red-300 p-3 rounded-lg text-center mb-4'>
+                        {error}
+                    </div>
+                )}
 
-  return (
-    <div className='flex items-center justify-center bg-blue-300 min-h-screen'>
-        <div className='border-2 rounded-xl border-gray-50 bg-white w-[350px] h-auto p-4 text-center justify-center'>
-            <h1 className='font-bold text-3xl mb-3'>
-                Add a Book
-            </h1>
-
-            <form className=' gap-4 flex flex-col justify-center items-center p-2 mb-3' action="">
-                <input
-                 className='border border-gray-200 rounded-2xl p-2 w-2/3'
-                  type="text"
-                  placeholder='Enter Book Name'
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-
-                <input
-                 className='border border-gray-200 rounded-2xl p-2 w-2/3'
-                  type="text"
-                  placeholder='Enter Author Name'
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  required
-                />
-
-                <input
-                 className='border border-gray-200 rounded-2xl p-2 w-2/3'
-                  type="text"
-                  placeholder='Enter Cateory of books'
-                  value={category}
-                  onChange={(e) => setCategory(e.target.valu)}
-                  required
-                />
-
-                <button
-                 className='bg-blue-500 px-4 p-2 rounded-xl text-white'
-                 type='submit'
-                 disabled={loading}
+                {/* ✅ 4. The function is correctly bound here */}
+                <form
+                    className=' gap-4 flex flex-col justify-center items-center p-2 mb-3'
+                    onSubmit={handleAddBook} 
                 >
-                  { loading? 'Adding...' : 'Add Book'}
-                </button>
+                    <input
+                        className='border border-gray-300 rounded-lg p-3 w-full focus:border-blue-500 focus:ring-1'
+                        type="text"
+                        placeholder='Enter Book Title'
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
+                    {/* ... other inputs (author, category) ... */}
+                    <input
+                        className='border border-gray-300 rounded-lg p-3 w-full focus:border-blue-500 focus:ring-1'
+                        type="text"
+                        placeholder='Enter Author Name'
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
+                        required
+                    />
 
-                <button
-                  type='button'
-                 className='text-gray-500 mt-2'
-                 onClick={() => navigate('/cheifpage')}
-                >
-                  Cancel
-                </button>
-            </form>
+                    <input
+                        className='border border-gray-300 rounded-lg p-3 w-full focus:border-blue-500 focus:ring-1'
+                        type="text"
+                        placeholder='Enter Category'
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                    />
 
+                    <button
+                        className='bg-blue-600 hover:bg-blue-700 active:scale-[0.98] px-6 p-3 mt-4 rounded-xl text-white font-semibold w-full disabled:opacity-50'
+                        type='submit'
+                        disabled={loading}
+                    >
+                        {loading ? 'Adding...' : 'Add Book'}
+                    </button>
 
+                    <button
+                        type='button'
+                        className='text-gray-500 hover:text-gray-700 mt-2'
+                        onClick={() => navigate('/cheifpage')}
+                    >
+                        Cancel
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default AddBookForm

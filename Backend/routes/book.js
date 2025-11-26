@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
     getAllBooks,
+    getSingleBook,
     addBook,
     updateBook,
     deleteBook,
@@ -12,6 +13,7 @@ const {
 const authMiddleware = require('../middleware/auth');
 
 router.get('/', authMiddleware, getAllBooks);
+router.get('/:id', authMiddleware, getSingleBook)
 router.post('/', authMiddleware, addBook);
 router.patch('/:id', authMiddleware, updateBook);
 router.delete('/:id', authMiddleware, deleteBook);

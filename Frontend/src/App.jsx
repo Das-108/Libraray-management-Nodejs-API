@@ -19,11 +19,11 @@ const App = () => {
       <Route path= "/" element= {<LoginForm />} />
       <Route path= "/signup" element= {<SignUp />} />
       <Route path="/cheifpage" element= {<CheifPage />} />
-      <Route path='/individualbookpage' element= {<IndividualBookPage />} />
+      <Route path='/individualbookpage/:id' element= {<IndividualBookPage />} />
 
       <Route path = '/add-book' element= {<AddBookForm />} />
       <Route path='/issue-book' element= {<IssueBook />} />
-      <Route path='/edit-book' element={<UpdateBookDetails />}/>
+      <Route path='/edit-book/:id' element={<UpdateBookDetails />}/>
     </Routes>
   )
 }
