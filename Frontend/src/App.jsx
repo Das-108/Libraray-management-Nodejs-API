@@ -22,7 +22,7 @@ const App = () => {
       <Route path='/individualbookpage/:id' element= {<IndividualBookPage />} />
 
       <Route path = '/add-book' element= {<AddBookForm />} />
-      <Route path='/issue-book' element= {<IssueBook />} />
+      <Route path='/issue-book/:id' element= {<IssueBook />} />
       <Route path='/edit-book/:id' element={<UpdateBookDetails />}/>
     </Routes>
   )

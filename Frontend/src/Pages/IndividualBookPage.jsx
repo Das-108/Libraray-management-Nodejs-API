@@ -11,6 +11,7 @@ const IndividualBookPage = () => {
   const [book, setBook] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const fetchBooksDetails = async () => {
     if(!id) {
@@ -66,27 +67,42 @@ const IndividualBookPage = () => {
   }
 
   const issueBookOnClick = () => {
-    navigate ('/issue-book');
+    navigate (`/issue-book/${id}`);
   }
 
   const editBookOnClick = () => {
     navigate(`/edit-book/${id}`)
   }
-  if(!mongoose.Types.ObjectId.isValid(book)) {
-    return res.status(404).json({ msg: `Book not found(invalid Id Format)`})
-  })
+ 
 
   const handleDeleteBook = async () => {
     if (!window.confirm(`Are you sure you want to delete the book "${book.title}"`)) {
       return
     }
     try {
-      await axiosInstance.delete(`/book/${id}`)
+      const response = await axiosInstance.delete(`/book/${id}`)      
       alert(`Book "${book.title}" successfully deleted.`)
       navigate('/cheifpage')
     } catch (error) {
       console.error('Deletion Failed:' , error)
       setError(error.response?.data?.msg || `Failed to delete the Book`)
+    }
+  }
+
+  const handleReturnedBook = async () => {
+    if(!window.confirm( `Are you sure the book has been returend "${book.title}"`)) {
+      return
+    }
+    setIsProcessing(true)
+    try {      
+      const response = await axiosInstance.post(`/book/return/${id}`)
+      setBook(response.data.book)
+      alert(response.data.msg || `Book "${book.title}" has been returned.`)
+    } catch (error) {
+      console.error('Returned failed : ' , error)
+      setError(error.response?.data?.msg || error.response?.data?.error || `failed to mark returned the book`)
+    }finally {
+      setIsProcessing(false)
     }
   }
 
@@ -134,6 +150,8 @@ const IndividualBookPage = () => {
                 </button>
 
                 <button
+                  onClick={handleReturnedBook}
+                  disabled= {isProcessing}
                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                 >
                 Book returned

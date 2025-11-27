@@ -2,6 +2,7 @@ const { error } = require('console');
 const Book = require('../models/book');
 const User = require('../models/user');
 const book = require('../models/book');
+const mongoose = require('mongoose')
 
 const getAllBooks = async (req, res) => {
     try {
@@ -26,6 +27,10 @@ const addBook = async (req, res) => {
 const getSingleBook = async (req, res) => {
     const { id: bookId} = req.params
     
+    if(!mongoose.Types.ObjectId.isValid(bookId)) {
+    return res.status(404).json({ msg: `Book not found(invalid Id Format)`})
+    }
+
     try {
         const book = await Book.findById(bookId)
 
@@ -69,44 +74,67 @@ const deleteBook = async (req, res) => {
 };
 
 const issueBook = async (req, res) => {
+
+    const { userId, dueDate} = req.body;
+
+    const bookId = req.params.id
+    if(!mongoose.Types.ObjectId.isValid(bookId)) {
+        return res.status(400).json({ error: 'Invalid Book ID format.'})
+    }
+
+
     try {
-        const book = await Book.findById(req.params.id)
-        const { userId, dueData } = req.body
+        
+        const bookPromise = Book.findById(bookId)
+        const userPromise = User.findById(userId)
+
+        const [ book, user] = await Promise.all([bookPromise, userPromise])
+
 
         if(!book) return res.status(404).json({ error: 'Book Nor found'})
-        if (book.status === 'issued'){
+        if (book.status === 'issued' || book.status === 'Borrowed'){
             return res.status(400).json({ error: 'Book already issued'})
         }
-        const user = await User.findById(userId);
         if (!user) return res.status(404).json({ error: 'user not found'})
 
-        book.status = 'issued';
-        book.issusedTo = user._id;
+        book.status = 'Borrowed';
+        book.issuedTo = user._id;
         book.dueDate = dueDate;
         await book.save();
 
-        res.json({ message: `Book Issused to ${user.username}`, book })
+        res.json({ message: `Book Issused to ${user.username}`, book : book })
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        console.error('Issue Book Error :' , error.message)
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ error: `Validation error ${error.message}`})
+        }
+        res.status(500).json({ error: error.message })
     }
 };
 
 const returnBook = async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
-        if(!book) return res.status(404).json({ error: 'book is not found'})
 
-        if (book.status !== 'issued') {
-            return res.status(400).json({ error: 'Book is not currently issued'})
+        if(!book) return res.status(404).json({ msg: 'book is not found'})
+            
+        if (book.status === 'available') {
+            return res.status(400).json({ error: 'Book is already avialelable . cannot be returned again'})  
         }
 
+        if (book.status !== 'Borrowed') {
+            return res.status(400).json({ mgs: `Book status is '${book.status}'. cannot return.`})
+        }
+
+        
         book.status = 'available';
-        book.issusedTo = null;
+        book.issuedTo = null;
         book.dueDate = null;
         await book.save()
 
         res.json({ msg : 'Book sucessfully returned', book })
     } catch (error) {
+        console.error('Backend Return Error: ', error)
         res.status(400).json({ error: error.message})
     }
 };

@@ -8,7 +8,7 @@ const UpdateBookDetails = () => {
 
   const [book, setBook] = useState(null)
   const [author, setAuthor] = useState('')
-  const [tittle, setTittle] = useState('')
+  const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('Avialable')
 
@@ -24,11 +24,11 @@ const UpdateBookDetails = () => {
         return
       }
       try {
-        const response = await axiosInstance.get('/book/${id}')
+        const response = await axiosInstance.get(`/book/${id}`)
         const currentBook = response.data.book
 
         setBook(currentBook);
-        setTittle(currentBook.tittle)
+        setTitle(currentBook.title)
         setAuthor(currentBook.author)
         setCategory(currentBook.category)
         setStatus(currentBook.status || 'Available')
@@ -48,17 +48,19 @@ const UpdateBookDetails = () => {
     setIsSubmitting(true)
     setError(null)
 
-    if(!tittle || !author || !category || !status) {
+    if(!title || !author || !category || !status) {
       setIsSubmitting(false)
       return setError('Please fill in all required Fields.')
     }
 
     try {
-      const payload = { tittle, author, category, status};
+      const payload = { title, author, category, status};
 
       const response = await axiosInstance.patch( `/book/${id}`, payload)
 
-      alert(`Book "${response.data.book.tittle}" updated sucessfully`)
+      const updatedTitle = response.data.book?.title || response.data.title
+
+      alert(`Book "${updatedTitle}" updated sucessfully`)
 
       navigate(`/individualbookpage/${id}`)
     } catch (error) {
@@ -100,8 +102,8 @@ const UpdateBookDetails = () => {
              className='border border-gray-200 rounded-2xl p-2 w-2/3'
               type="text"
               placeholder='Book Name' 
-              value={tittle}
-              onChange={(e) => setTittle(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
 
