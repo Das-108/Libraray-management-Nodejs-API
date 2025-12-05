@@ -6,7 +6,7 @@ import axiosInstance from '../api/axiosInstance'
 
 const BOOKS_ENDPOINT = '/book'
 
-
+const BACKEND_URL = 'http://localhost:3000'
 
 const CheifPage = () => {
 
@@ -99,23 +99,21 @@ const CheifPage = () => {
 
         {books.map((book) => (
           <div key={book._id} onClick={() => individualBook(book._id)} className=' border w-[280px] p-3 rounded-xl'>
-          <img
-           className='w-[260px] h-[150px] mb-2 object-cover rounded-lg'
-            src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt={book.title} />
-          <div className='text-gray-500 tracking-tight'>
-            <p>Name: <span className='text-black font-medium'>{book.title}</span></p>
-            <p>Author: <span className='text-black font-medium'>{book.author}</span></p>
-            <p>Status: <span className={`font-medium ${book.status === 'Available' ? 'text-green-600' : 'text-red-600'}`}>{book.status || 'N/A'}</span></p>
-            <p>Category: {book.category}</p>
-          </div>
-        </div>
-
+            <img
+            className='w-[260px] h-[150px] mb-2 object-cover rounded-lg'
+              src={`${BACKEND_URL}/${book.coverImage}`}
+            />
+            <div className='text-gray-500 tracking-tight'>
+              <p>Name: <span className='text-black font-medium'>{book.title}</span></p>
+              <p>Author: <span className='text-black font-medium'>{book.author}</span></p>
+              <p>Status: <span className={`font-medium ${book.status === 'Available' ? 'text-green-600' : 'text-red-600'}`}>{book.status || 'N/A'}</span></p>
+              <p>Category: {book.category}</p>
+            </div>
+          </div>        
+      
         
-))}
-        
-  
-
+        ))}
+          
       </div>
 
     </div>

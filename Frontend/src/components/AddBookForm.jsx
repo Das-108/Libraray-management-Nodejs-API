@@ -14,6 +14,7 @@ const AddBookForm = () => {
     const [category, setCategory] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [coverImage, setCoverImage] = useState(null)
 
     const handleAddBook = async (e) => {
         e.preventDefault();
@@ -21,20 +22,23 @@ const AddBookForm = () => {
         setLoading(true)
         setError(null)
 
-        if (!title || !author || !category) {
+        if (!title || !author || !category || !coverImage) {
             setLoading(false)
             return setError('Please fill in all fields (Title, Author, Category).')
         }
 
         try {
-            const payload = {
-                title,
-                author,
-                category,
-                status: 'Available'
-            }
 
-            const response = await axiosInstance.post(ADD_BOOK_ENDPOINT, payload);
+            const formData = new FormData();
+
+            formData.append('title', title)
+            formData.append('author', author)
+            formData.append('category', category)
+            formData.append('status', 'Available')
+
+            formData.append('book_cover', coverImage)
+            
+            const response = await axiosInstance.post(ADD_BOOK_ENDPOINT, formData);
 
             const bookTitle = response.data.book?.title || title;
 
@@ -94,6 +98,14 @@ const AddBookForm = () => {
                         placeholder='Enter Category'
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        required
+                    />
+
+                    <input
+                        className='border border-gray-300 rounded-lg p-3 w-full focus:border-blue-500 focus:ring-1'
+                        type="file"
+                        accept='image/*'                     
+                        onChange={(e) => setCoverImage(e.target.files[0])}
                         required
                     />
 

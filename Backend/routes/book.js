@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router();
+const upload = require('../middleware/multer')
+
 
 const {
     getAllBooks,
@@ -12,9 +14,10 @@ const {
 } = require ('../controllers/book');
 const authMiddleware = require('../middleware/auth');
 
+
+router.post('/', authMiddleware, upload.single('book_cover'), addBook)
 router.get('/', authMiddleware, getAllBooks);
 router.get('/:id', authMiddleware, getSingleBook)
-router.post('/', authMiddleware, addBook);
 router.patch('/:id', authMiddleware, updateBook);
 router.delete('/:id', authMiddleware, deleteBook);
 router.post('/issue/:id', authMiddleware, issueBook);

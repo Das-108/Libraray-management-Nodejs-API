@@ -16,7 +16,22 @@ const getAllBooks = async (req, res) => {
 
 const addBook = async (req, res) => {
     try {
-        const book = new Book(req.body);
+        const { title, author, category } = req.body
+
+        if(!title || !author) {
+            return res.status(400).json({ error: 'Ttile and Author are required fields.'})
+        }
+
+        const coverImagePath = req.file.path;
+
+        const bookData ={
+            title,
+            author,
+            category,
+            coverImage: coverImagePath,
+        }
+
+        const book = new Book(bookData)        
         await book.save()
         res.json(book)
     }catch (error) {
